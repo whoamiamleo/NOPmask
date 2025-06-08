@@ -1,13 +1,9 @@
-# NOPmask
-
-```text
+# NOPmask v1.0
 ██████████████████████████████████████████████
 █▄─▀█▄─▄█─▄▄─█▄─▄▄─█▄─▀█▀─▄██▀▄─██─▄▄▄▄█▄─█─▄█
 ██─█▄▀─██─██─██─▄▄▄██─█▄█─███─▀─██▄▄▄▄─██─▄▀██
 ▀▄▄▄▀▀▄▄▀▄▄▄▄▀▄▄▄▀▀▀▄▄▄▀▄▄▄▀▄▄▀▄▄▀▄▄▄▄▄▀▄▄▀▄▄▀
-```
 
-**NOPmask — Version 1.0**  
 Shellcode obfuscation utility to evade signature-based detection and emulator-driven analysis.
 
 ---
