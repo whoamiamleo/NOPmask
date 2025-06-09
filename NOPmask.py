@@ -149,4 +149,4 @@ if __name__ == "__main__":
         open(args.output,"wb").write(newShellcode)
         print("[w00t]", f"Wrote encrypted shellcode with decryption stub to \"{args.output}\" ({newShellcodeLen} bytes)")
     except Exception as e:
-        print(e)
+        print("[ERROR]", e)
