@@ -11,7 +11,7 @@ Shellcode obfuscation utility to evade signature-based detection and emulator-dr
 ## Features
 
 - Encrypts shellcode to appear like benign NOP instructions.
-- Only decrypts and executes shellcode if running on real machine.
+- Decrypts and executes shellcode only when running on a real machine.
 - Works with any operating system that runs on the AMD64 or i386 architecture.
 
 ---
