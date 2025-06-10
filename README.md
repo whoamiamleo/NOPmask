@@ -65,9 +65,8 @@ msfvenom -p generic/custom PAYLOADFILE=masked_loader.bin -f C -v shellcode
 
 ### Warnings
 
-1. The decryption stub alters the memory space that the shellcode is executed within, and therefore the memory space allocated for the shellcode must have Read/Write/Execution permissions.
-2. The emulation evasion technique employed here exploits the fact that emulators are not patient, they will try to rush the emulation to not let the user wait, so please allow up to a minute for your shellcode to execute.
-
+1. The decryption stub modifies the memory region containing the shellcode during runtime, requiring the allocated memory space to have Read/Write/Execute (RWX) permissions to function properly.
+2. The implementation incorporates a time-based emulation evasion technique that exploits the operational constraints of automated analysis systems. Since emulators prioritize speed over completeness to avoid delays for the user, the shellcode includes deliberate execution delays. Allow up to one minute for complete shellcode execution, as this timing mechanism is essential for bypassing sandboxed environments.
 ---
 
 ## Attribution
