@@ -58,7 +58,7 @@ msfvenom -p generic/custom PAYLOADFILE=masked_shellcode.bin -f C -v shellcode
 
 Example of using with donut:
 ```bash
-donut.exe -a 2 -i payload.dll -o loader.bin
+donut.exe -a 2 -i .\\program.exe -p "arg1 arg2 arg3" -o loader.bin
 python NOPmask.py -a amd64 -i loader.bin -o masked_loader.bin -f binary
 msfvenom -p generic/custom PAYLOADFILE=masked_loader.bin -f C -v shellcode
 ```
@@ -67,6 +67,7 @@ msfvenom -p generic/custom PAYLOADFILE=masked_loader.bin -f C -v shellcode
 
 1. The decryption stub modifies the memory region containing the shellcode during runtime, requiring the allocated memory space to have Read/Write/Execute (RWX) permissions to function properly.
 2. The implementation incorporates a time-based emulation evasion technique that exploits the operational constraints of automated analysis systems. Since emulators prioritize speed over completeness to avoid delays for the user, the shellcode includes deliberate execution delays. Allow up to one minute for complete shellcode execution, as this timing mechanism is essential for bypassing sandboxed environments.
+3. This is not intended for use with very large shellcode, as generating the shellcode with python is extremely slow. Even when using Python's JIT-accelerated Interpreter (PyPy) it is painfully slow with very large shellcode. I hope to re-write this in C++ to dramatically speed up the compilation time... or perhaps you can! :)
 ---
 
 ## Attribution

