@@ -107,7 +107,11 @@ def generateShellcode(shellcode, arch):
         raise Exception(f"Invalid architecture (must be {AMD64} or {I386})")
 
     print(colorText("\n[INFO]", fg=Fore.BLUE), "Compiling instructions...")
-    newShellcode = asm(EMULATOR_EVASION_STUB) + asm(trampoline) + NOP_SLED + encryptedShellcode + NOP_SLED + asm(decryptStub) + asm(trampolineBack)
+    newShellcode = asm(trampoline) + NOP_SLED + encryptedShellcode + NOP_SLED + asm(decryptStub) + asm(trampolineBack)
+    
+    if args.evader:
+        newShellcode = asm(EMULATOR_EVASION_STUB) + newShellcode
+    
     return newShellcode
 
 # MAIN
@@ -133,6 +137,13 @@ if __name__ == "__main__":
         choices = [AMD64, I386],
         required = True,
         help='target CPU architecture'
+    )
+    parser.add_argument(
+        "-e",
+        "--evader",
+        action='store_true',
+        required = False,
+        help='enable emulator evasion'
     )
     parser.add_argument(
         "-i",

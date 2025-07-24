@@ -34,11 +34,12 @@ pip install -r requirements.txt
 
 ## Usage
 ```console
-usage: NOPmask.py [-h] -a {amd64,i386} -i INPUT -o OUTPUT -f {base64,binary}
+usage: NOPmask.py [-h] -a {amd64,i386} [-e] -i INPUT -o OUTPUT -f {base64,binary}
 
 options:
   -h, --help                        show this help message and exit
   -a, --arch {amd64,i386}           target CPU architecture
+  -e, --evader                      enable emulator evasion
   -i, --input INPUT                 path to input file
   -o, --output OUTPUT               path to output file
   -f, --format {base64,binary}      format of output file
