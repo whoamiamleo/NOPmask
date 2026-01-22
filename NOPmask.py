@@ -38,15 +38,6 @@ delay_loop4:
 mov ecx, 0xFFFFFFFF
 delay_loop5:
     loop delay_loop5
-
-rdtsc
-sub edx, edi
-
-cmp edx, 0x0a
-jae passed_validation
-ret
-
-passed_validation:
 """
 NOP_SLED = b'\x90' * NOP_SLED_LEN
 
