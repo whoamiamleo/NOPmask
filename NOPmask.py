@@ -20,9 +20,6 @@ getEIP:
     pop eax
 """
 EMULATOR_EVASION_STUB = """
-rdtsc
-mov edi, edx
-
 mov ecx, 0xFFFFFFFF
 delay_loop1:
     loop delay_loop1
