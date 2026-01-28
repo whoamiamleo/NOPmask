@@ -6,6 +6,8 @@
 
 Shellcode obfuscation utility to evade signature-based detection and emulator-driven analysis.
 
+*This repository has been archived and is no longer under active development. There are no plans to extend or maintain this project. Future work will be pursued in a **new, separate project**, designed from the ground up with stronger, more advanced, and more reliable evasion techniques.*
+
 ---
 
 ## Features
